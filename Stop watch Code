@@ -1,0 +1,68 @@
+import simplegui
+minutes=0
+check='true'
+ten_seconds=0
+seconds=0
+millisec=0
+total=0
+count_success=0
+def update(canvas):
+    global millisec
+    if(seconds<=9):
+        canvas.draw_text(str(minutes)+":"+str(ten_seconds)+str(seconds)+"."+str(millisec),(60,110),36,'White')
+        canvas.draw_text(str(count_success)+"/"+str(total),(160,30),14,'White')
+    else:
+        canvas.draw_text(str(minutes)+":"+str(seconds)+"."+str(millisec),(60,110),36,'White')    
+        canvas.draw_text(str(count_success)+"/"+str(total),(160,30),14,'White')
+def millise():
+    global seconds
+    global ten_seconds
+    global millisec
+    global minutes
+    millisec+=1
+    millisec=millisec%10
+    if((millisec==0) and (seconds<60)):
+        seconds+=1
+    if(seconds>=60):
+        seconds=seconds-60
+        minutes+=1
+    if(minutes>=60):
+        return
+def stop():
+    global total
+    global count_success
+    global millisec
+    global check
+    check=timer.is_running()
+    if(check==False):
+        total=total
+    else:
+        total+=1
+    timer.stop()
+    if((millisec==0) and (check==True)):
+        count_success+=1    
+def start():
+    global check
+    timer.start()
+    check=True
+def reset():
+    global count_success
+    global total
+    global minutes
+    global ten_seconds
+    global seconds
+    global millisec
+    total=0
+    count_success=0
+    minutes=0
+    ten_seconds=0
+    seconds=0
+    millisec=0
+    timer.stop()
+frame=simplegui.create_frame("test",200,200)
+frame.set_draw_handler(update)
+frame.add_button("Start Clock",start)
+frame.add_button("Stop Clock",stop)
+frame.add_button("Reset",reset)
+timer=simplegui.create_timer(100,millise)
+frame.start()
